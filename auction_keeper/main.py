@@ -28,6 +28,8 @@ from requests.exceptions import RequestException
 from typing import Optional
 from web3 import Web3
 
+from web3.middleware import geth_poa_middleware
+
 from pymaker import Address, get_pending_transactions, web3_via_http
 from pymaker.auctions import Clipper, Flapper, Flipper, Flopper
 from pymaker.deployment import DssDeployment
@@ -143,6 +145,7 @@ class AuctionKeeper:
         # Configure connection to the chain
         self.web3: Web3 = kwargs['web3'] if 'web3' in kwargs else web3_via_http(
             endpoint_uri=self.arguments.rpc_host, timeout=self.arguments.rpc_timeout, http_pool_size=100)
+        self.web3.middleware_onion.inject(geth_poa_middleware, layer=0)
         self.web3.eth.defaultAccount = self.arguments.eth_from
         register_keys(self.web3, self.arguments.eth_key)
         self.our_address = Address(self.arguments.eth_from)
