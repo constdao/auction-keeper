@@ -279,6 +279,8 @@ class AuctionKeeper:
 
         with Lifecycle(self.web3) as lifecycle:
             self.lifecycle = lifecycle
+            # Don't wait for sync on startup, but do wait for sync before each block
+            self.lifecycle.do_wait_for_sync = False
             lifecycle.on_startup(self.startup)
             lifecycle.on_shutdown(self.shutdown)
             if self.auction_type in ['clip', 'flip']:
