@@ -61,13 +61,18 @@ class AuctionKeeper:
 
         parser.add_argument("--rpc-host", type=str, default="http://localhost:8545",
                             help="JSON-RPC endpoint URI with port (default: `http://localhost:8545')")
-        parser.add_argument("--rpc-timeout", type=int, default=10,
-                            help="JSON-RPC timeout (in seconds, default: 10)")
+        parser.add_argument("--rpc-timeout", type=int, default=15,
+                            help="JSON-RPC timeout (in seconds, default: 15)")
 
+        parser.add_argument("--network", type=str, required=True,
+                            help="Network that you're running the Keeper on (options, 'mainnet', 'kovan', 'testnet')")
         parser.add_argument("--eth-from", type=str, required=True,
                             help="Ethereum account from which to send transactions")
         parser.add_argument("--eth-key", type=str, nargs='*',
                             help="Ethereum private key(s) to use (e.g. 'key_file=aaa.json,pass_file=aaa.pass')")
+
+        parser.add_argument("--dss-deployment-file", type=str, required=False,
+                            help="Json description of all the system addresses (e.g. /Full/Path/To/configFile.json)")
 
         parser.add_argument('--type', type=str, choices=['clip', 'flip', 'flap', 'flop'],
                             help="Auction type in which to participate")
@@ -164,7 +169,12 @@ class AuctionKeeper:
             raise RuntimeError("--from-block must be specified to kick off flop auctions")
 
         # Configure core and token contracts
-        self.mcd = DssDeployment.from_node(web3=self.web3)
+        if self.arguments.dss_deployment_file:
+            self.mcd = DssDeployment.from_json(web3=self.web3,
+                                               conf=open(self.arguments.dss_deployment_file, "r").read())
+        else:
+            self.mcd = DssDeployment.from_network(web3=self.web3, network=self.arguments.network)
+
         self.vat = self.mcd.vat
         self.vow = self.mcd.vow
         self.mkr = self.mcd.mkr
