@@ -94,7 +94,7 @@ class AuctionKeeper:
                                  "used to manage OS and hardware limitations")
         parser.add_argument('--min-collateral-lot', type=float, default=0,
                             help="Minimum lot size to create or bid upon/take from a collateral auction")
-        parser.add_argument('--bid-check-interval', type=float, default=4.0,
+        parser.add_argument('--bid-check-interval', type=float, default=5.0,
                             help="Period of timer [in seconds] used to check bidding models for changes")
         parser.add_argument('--bid-delay', type=float, default=0.0,
                             help="Seconds to wait between bids, used to manage OS and hardware limitations")
@@ -106,7 +106,7 @@ class AuctionKeeper:
         parser.add_argument('--from-block', type=int,
                             help="Starting block from which to find vaults to bite or debt to queue "
                                  "(set to block where MCD was deployed)")
-        parser.add_argument('--chunk-size', type=int, default=20000,
+        parser.add_argument('--chunk-size', type=int, default=2000,
                             help="When batching chain history requests, this is the number of blocks for each request")
         parser.add_argument("--tokenflow-url", type=str,
                             help="When specified, urn history will be initialized using the TokenFlow API")
